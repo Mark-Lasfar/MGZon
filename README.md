@@ -18,7 +18,7 @@
 
 ## View Demo Website
 
-https://next-mongo-ecommerce-final.vercel.app/
+https://mgzon.vercel.app/
 
 ## What you will learn
 
