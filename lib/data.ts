@@ -966,13 +966,13 @@ const products: IProductInput[] = [
       reviews: [],
     },
     {
-      name: "Mens Wearbreeze Shoes, Urban - Ultra Comfortable Shoes, Breeze Shoes for Men, Men's Mesh Dress Sneakers Business Shoes",
+      name: "Computer HUANUO",
       slug: toSlug(
-        "Mens Wearbreeze Shoes, Urban - Ultra Comfortable Shoes, Breeze Shoes for Men, Men's Mesh Dress Sneakers Business Shoes"
+        "computer huanuo"
       ),
       category: 'Computers',
       brand: 'HUANUO Computers',
-      images: ['/1000.jpg', '10000.jpg'],
+      images: ['/images/1000.jpg', '/images/10000.jpg'],
       tags: ['best-seller', 'todays-deal'],
       isPublished: true,
       price: 32.99,
@@ -995,6 +995,38 @@ const products: IProductInput[] = [
     
       reviews: [],
     },
+
+    {
+      name: "Computer",
+      slug: toSlug(
+        "computer"
+      ),
+      category: 'Computers',
+      brand: 'HUANUO',
+      images: ['/images/611lHUtW+-L._AC_SL1208_.jpg', '/images/10000.jpg'],
+      tags: ['best-seller', 'todays-deal'],
+      isPublished: true,
+      price: 32.99,
+      listPrice: 80,
+      avgRating: 3.46,
+      numReviews: 13,
+      ratingDistribution: [
+        { rating: 1, count: 1 },
+        { rating: 2, count: 2 },
+        { rating: 3, count: 3 },
+        { rating: 4, count: 4 },
+        { rating: 5, count: 3 },
+      ],
+      countInStock: 46,
+      numSales: 48,
+      description:
+        'Cloudfoam Comfort sockliner is ultra-soft and plush, with two layers of cushioning topped with soft, breathable mesh',
+      sizes: ['15', '17', '22', '25'],
+      colors: ['Green', 'Black', 'Grey'],
+    
+      reviews: [],
+    },
+
 ]
 // const reviews = [
 //   {
