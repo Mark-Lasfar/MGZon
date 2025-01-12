@@ -1333,18 +1333,18 @@ We also provide helpful resources such as order tracking, product guides, and FA
         pageSize: 9,
       },
       site: {
-        name: 'NxtAmzn',
+        name: 'MGZon',
         description:
-          'NxtAmzn is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
+          'MGZon is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
         keywords: 'Next Ecommerce, Next.js, Tailwind CSS, MongoDB',
-        url: 'https://next-mongo-ecommerce-final.vercel.app',
+        url: 'https://mg-zon.vercel.app',
         logo: '/icons/logo.svg',
         slogan: 'Spend less, enjoy more.',
         author: 'Next Ecommerce',
-        copyright: '2000-2024, Next-Ecommerce.com, Inc. or its affiliates',
-        email: 'admin@example.com',
+        copyright: '2000-2025, mg-zon.vercel.app, Inc. or its affiliates',
+        email: 'marklasfar@gmail.com',
         address: '123, Main Street, Anytown, CA, Zip 12345',
-        phone: '+1 (123) 456-7890',
+        phone: '+20 1212444617',
       },
       carousels: [
         {
