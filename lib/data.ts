@@ -16,7 +16,7 @@ const users: IUserInput[] = [
       province: 'NY',
       postalCode: '10001',
       country: 'USA',
-      phone: '123-456-7890',
+      phone: '+20 1212444617',
     },
     paymentMethod: 'Stripe',
     emailVerified: false,
@@ -960,12 +960,59 @@ const products: IProductInput[] = [
     numSales: 48,
     description:
       'Cloudfoam Comfort sockliner is ultra-soft and plush, with two layers of cushioning topped with soft, breathable mesh',
-    sizes: ['8', '9', '10', '11'],
-    colors: ['Green', 'Black', 'Grey'],
-
-    reviews: [],
-  },
+      sizes: ['8', '9', '10', '11'],
+      colors: ['Green', 'Black', 'Grey'],
+      
+      reviews: [],
+    },
+    {
+      name: "Mens Wearbreeze Shoes, Urban - Ultra Comfortable Shoes, Breeze Shoes for Men, Men's Mesh Dress Sneakers Business Shoes",
+      slug: toSlug(
+        "Mens Wearbreeze Shoes, Urban - Ultra Comfortable Shoes, Breeze Shoes for Men, Men's Mesh Dress Sneakers Business Shoes"
+      ),
+      category: 'Computers',
+      brand: 'HUANUO Computers',
+      images: ['/1000.jpg', '10000.jpg'],
+      tags: ['best-seller', 'todays-deal'],
+      isPublished: true,
+      price: 32.99,
+      listPrice: 80,
+      avgRating: 3.46,
+      numReviews: 13,
+      ratingDistribution: [
+        { rating: 1, count: 1 },
+        { rating: 2, count: 2 },
+        { rating: 3, count: 3 },
+        { rating: 4, count: 4 },
+        { rating: 5, count: 3 },
+      ],
+      countInStock: 46,
+      numSales: 48,
+      description:
+        'Cloudfoam Comfort sockliner is ultra-soft and plush, with two layers of cushioning topped with soft, breathable mesh',
+      sizes: ['15', '17', '22', '25'],
+      colors: ['Green', 'Black', 'Grey'],
+    
+      reviews: [],
+    },
 ]
+// const reviews = [
+//   {
+//     rating: 1,
+//     title: 'Poor quality',
+//     comment:
+//       'Very disappointed. The item broke after just a few uses. Not worth the money.',
+//   },
+//   {
+//     rating: 2,
+//     title: 'Disappointed',
+//     comment:
+//       "Not as expected. The material feels cheap, and it didn't fit well. Wouldn't buy again.",
+//   },
+
+
+
+// ]
 const reviews = [
   {
     rating: 1,
@@ -979,6 +1026,10 @@ const reviews = [
     comment:
       "Not as expected. The material feels cheap, and it didn't fit well. Wouldn't buy again.",
   },
+
+
+
+
   {
     rating: 2,
     title: 'Needs improvement',
@@ -1081,14 +1132,13 @@ As we continue to grow, our commitment to quality and service remains unwavering
 
 **Customer Support**
 For inquiries about orders, products, or account-related issues, contact our customer support team:
-- **Email:** support@example.com
-- **Phone:** +1 (123) 456-7890
-- **Live Chat:** Available on our website from 9 AM to 6 PM (Monday to Friday).
+- **Email:** marklasfar@gmail.com
+- **Phone:** +20 1212444617
 
 **Head Office**
 For corporate or business-related inquiries, reach out to our headquarters:
 - **Address:** 1234 E-Commerce St, Suite 567, Business City, BC 12345
-- **Phone:** +1 (987) 654-3210
+- **Phone:** +20 1212444617
 
 We look forward to assisting you! Your satisfaction is our priority.
 `,
