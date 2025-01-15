@@ -11,12 +11,14 @@ import { getTranslations } from 'next-intl/server'
 
 import Hotjar from '@hotjar/browser';
 
+
+export default async function Header() {
+  
 const siteId = 5267858;
 const hotjarVersion = 6;
 
 Hotjar.init(siteId, hotjarVersion);
-
-export default async function Header() {
+  
   const categories = await getAllCategories()
   const { site } = await getSetting()
   const t = await getTranslations()
