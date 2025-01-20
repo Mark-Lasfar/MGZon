@@ -10,15 +10,12 @@
 | Authentication | Auth.js, Google Auth, Magic Link |
 | Others         | uploadthing, resend, zod, etc    |
 
-[![Next.js MongoDB Amazona](/public/images/app.png)](https://mgzon.vercel.app/)
+[![Next.js MongoDB Amazona](/public/images/app.png)](https://mg-zon.vercel.app/)
 
-## Watch Video Tutorial
-
-[![Next.js MongoDB Amazona](https://i9.ytimg.com/vi/WLHCPwqHzzQ/mqdefault.jpg?v=676eca94&sqp=CIzAv7sG&rs=AOn4CLDrL8ebdZ8YJyJp96oMMKBTyAD1Dw)](https://youtu.be/WLHCPwqHzzQ)
 
 ## View Demo Website
 
-https://mgzon.vercel.app/
+https://mg-zon.vercel.app/
 
 ## What you will learn
 
@@ -38,8 +35,8 @@ https://mgzon.vercel.app/
 1. Clone repo
 
    ```shell
-    $ git clone git@github.com:basir/nextjs-amazona.git
-    $ cd nextjs-amazona
+    $ git clone https://github.com/Mark-Lasfar/MGZon.git
+    $ cd MGZon
    ```
 
 2. Create Env File
