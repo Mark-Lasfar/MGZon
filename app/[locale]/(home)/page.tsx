@@ -30,13 +30,12 @@ export default async function HomePage() {
     tag: 'best-seller',
   })
 
-  // ✅ التعديل هنا: جلب أول منتج لكل تصنيف واستخدام صورته
   const categoriesData = await Promise.all(
     categories.map(async (category) => {
-      const products = await getProductsForCard({ category }) // جلب المنتجات بناءً على التصنيف
+      const products = await getProductsForCard({ category }) 
       return {
         name: category,
-        image: products.length > 0 ? products[0].image : `/images/${toSlug(category)}.jpg`, // ✅ استخدام أول صورة منتج إذا وجدت
+        image: products.length > 0 ? products[0].image : `/images/${toSlug(category)}.jpg`, 
         href: `/search?category=${category}`,
       }
     })
@@ -49,7 +48,7 @@ export default async function HomePage() {
         text: t('See More'),
         href: '/search',
       },
-      items: categoriesData, // ✅ التعديل هنا: استخدام البيانات الجديدة
+      items: categoriesData,
     },
     {
       title: t('Explore New Arrivals'),
