@@ -29,6 +29,18 @@ export default async function HomePage() {
   const bestSellers = await getProductsForCard({
     tag: 'best-seller',
   })
+
+  const categoriesData = await Promise.all(
+    categories.map(async (category) => {
+      const products = await getProductsForCard({ category }) 
+      return {
+        name: category,
+        image: products.length > 0 ? products[0].image : `/images/${toSlug(category)}.jpg`, 
+        href: `/search?category=${category}`,
+      }
+    })
+  )
+
   const cards = [
     {
       title: t('Categories to explore'),
@@ -36,11 +48,7 @@ export default async function HomePage() {
         text: t('See More'),
         href: '/search',
       },
-      items: categories.map((category) => ({
-        name: category,
-        image: `/images/${toSlug(category)}.jpg`,
-        href: `/search?category=${category}`,
-      })),
+      items: categoriesData,
     },
     {
       title: t('Explore New Arrivals'),
