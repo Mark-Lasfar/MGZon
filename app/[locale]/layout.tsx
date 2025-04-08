@@ -1,34 +1,32 @@
-import { Geist, Geist_Mono } from 'next/font/google'
-import '../globals.css'
-import ClientProviders from '@/components/shared/client-providers'
-import { getDirection } from '@/i18n-config'
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
-import { routing } from '@/i18n/routing'
-import { notFound } from 'next/navigation'
-import { getSetting } from '@/lib/actions/setting.actions'
-import { cookies } from 'next/headers'
-import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import Image from 'next/image'
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import ClientProviders from '@/components/shared/client-providers';
+import { getDirection } from '@/i18n-config';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
+import { notFound } from 'next/navigation';
+import { getSetting } from '@/lib/actions/setting.actions';
+import { cookies } from 'next/headers';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import Image from 'next/image';
 
-// الخطوط - Fonts
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
   display: 'swap',
-})
+});
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
   display: 'swap',
-})
+});
 
-// Metadata الأساسية
 export async function generateMetadata() {
-  const setting = await getSetting()
-  const baseUrl = 'https://mg-zon.vercel.app' // استخدام رابط مباشر بدلًا من متغير البيئة
+  const setting = await getSetting();
+  const baseUrl = 'https://mg-zon.vercel.app';
 
   return {
     title: {
@@ -37,6 +35,9 @@ export async function generateMetadata() {
     },
     description: setting.site.description,
     metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: baseUrl,
+    },
     openGraph: {
       title: `${setting.site.name} - ${setting.site.slogan}`,
       description: setting.site.description,
@@ -44,7 +45,7 @@ export async function generateMetadata() {
       siteName: setting.site.name,
       images: [
         {
-          url: `${baseUrl}/og-image.jpg`, // استخدام مسار مباشر
+          url: `${baseUrl}/og-image.jpg`,
           width: 1200,
           height: 630,
           alt: setting.site.name,
@@ -57,42 +58,63 @@ export async function generateMetadata() {
       card: 'summary_large_image',
       title: `${setting.site.name} - ${setting.site.slogan}`,
       description: setting.site.description,
-      images: [`${baseUrl}/og-image.jpg`], // استخدام مسار مباشر
+      images: [`${baseUrl}/og-image.jpg`],
     },
-    keywords: ['MGZon', 'E-commerce', setting.site.name, 'Online Shopping'],
-  }
+    robots: {
+      index: true,
+      follow: true,
+      nocache: false,
+      googleBot: {
+        index: true,
+        follow: true,
+        noimageindex: false,
+      },
+    },
+  };
 }
 
 export default async function RootLayout({
   params,
   children,
 }: {
-  params: { locale: string }
-  children: React.ReactNode
+  params: { locale: string };
+  children: React.ReactNode;
 }) {
-  const setting = await getSetting()
-  const currency = cookies().get('currency')?.value || 'USD'
-  const { locale } = params
+  const setting = await getSetting();
+  const currency = cookies().get('currency')?.value || 'USD';
+  const { locale } = params;
 
   if (!routing.locales.includes(locale)) {
-    notFound()
+    notFound();
   }
 
-  const messages = await getMessages()
+  const messages = await getMessages();
 
-  // إنجازات المؤسس - Founder Achievements
+  // Founder Data with $15M Revenue Highlight
   const founderData = {
     name: "Ibrahim Elasfar",
     title: "Founder & CEO",
-    image: "/ibrahim_elasfar.jpg", // مسار مباشر من مجلد public
+    image: "/images/ibrahim_elasfar.jpg",
     achievements: [
-      { value: "$15M", label: "Q1 2024 Revenue" },
-      { value: "300%", label: "YoY Growth" },
-      { value: "1M+", label: "Customers" }
+      { 
+        value: "$15M", 
+        label: "Q1 2024 Revenue",
+        description: "Achieved in first quarter of 2024" 
+      },
+      { 
+        value: "300%", 
+        label: "YoY Growth",
+        description: "Year-over-year growth rate" 
+      },
+      { 
+        value: "1M+", 
+        label: "Customers",
+        description: "Active customer base" 
+      }
     ]
-  }
+  };
 
-  // البيانات المنظمة - Structured Data
+  // Structured Data for SEO
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -108,12 +130,13 @@ export default async function RootLayout({
       "@type": "Person",
       name: founderData.name,
       jobTitle: founderData.title,
-      description: `Founder who led ${setting.site.name} to $15M revenue in Q1 2024`,
-      image: "https://mg-zon.vercel.app/ibrahim_elasfar.jpg",
+      description: "Led company to $15M revenue in Q1 2024",
+      image: "https://mg-zon.vercel.app/images/ibrahim_elasfar.jpg",
       alumniOf: setting.site.name,
       award: "Forbes Middle East Top Entrepreneurs 2024"
-    }
-  }
+    },
+    description: setting.site.description,
+  };
 
   return (
     <html
@@ -123,32 +146,29 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
-        <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ffffff" />
-        
+        <meta name="google-site-verification" content="PQo-i3w5jhSFT2MCdZxg0HnFOHDQ-iYMLNg8rYeFtXM" />        
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         
-        {/* بيانات المؤسس - Founder Structured Data */}
+        {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
-      <body className="min-h-screen bg-white antialiased">
+      <body className="min-h-screen bg-background text-foreground">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders setting={{ ...setting, currency }}>
             
-            {/* قسم المؤسس - Founder Section */}
-            <div className="founder-section bg-gray-50 py-8 border-b">
+            {/* Founder Section with $15M Revenue */}
+            <header className="founder-section bg-gradient-to-r from-primary/5 to-secondary/5 py-8 border-b">
               <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  
-                  {/* صورة المؤسس - Founder Image */}
-                  <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-yellow-500">
+                <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                  <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-500 shadow-lg">
                     <Image
                       src={founderData.image}
                       alt={`${founderData.name}, ${founderData.title}`}
@@ -157,28 +177,26 @@ export default async function RootLayout({
                       priority
                     />
                   </div>
-                  
-                  {/* معلومات المؤسس - Founder Info */}
                   <div className="text-center md:text-left">
-                    <h2 className="text-2xl font-bold">{founderData.name}</h2>
-                    <p className="text-gray-600">{founderData.title}</p>
-                    
-                    {/* الإنجازات - Achievements */}
-                    <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
+                    <h1 className="text-3xl font-bold">{founderData.name}</h1>
+                    <p className="text-lg text-muted-foreground mb-4">{founderData.title}</p>
+                    <div className="grid grid-cols-3 gap-4 max-w-2xl">
                       {founderData.achievements.map((item, index) => (
-                        <div key={index} className="bg-white px-4 py-2 rounded-lg shadow-sm border">
-                          <div className="font-bold text-blue-600">{item.value}</div>
-                          <div className="text-sm text-gray-500">{item.label}</div>
+                        <div key={index} className="bg-background p-3 rounded-lg border shadow-sm">
+                          <div className="text-2xl font-bold text-primary">{item.value}</div>
+                          <div className="text-sm text-muted-foreground">{item.label}</div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </header>
 
-            {/* المحتوى الرئيسي - Main Content */}
-            {children}
+            {/* Main Content */}
+            <main className="container mx-auto px-4 py-8">
+              {children}
+            </main>
 
             <Analytics />
             <SpeedInsights />
@@ -186,5 +204,5 @@ export default async function RootLayout({
         </NextIntlClientProvider>
       </body>
     </html>
-  )
+  );
 }
