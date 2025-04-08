@@ -8,9 +8,11 @@ import { routing } from '@/i18n/routing'
 import { notFound } from 'next/navigation'
 import { getSetting } from '@/lib/actions/setting.actions'
 import { cookies } from 'next/headers'
-import React from 'react'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import Image from 'next/image'
 
-// تحسين تحميل الخطوط مع display: swap
+// الخطوط - Fonts
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -23,29 +25,29 @@ const geistMono = Geist_Mono({
   display: 'swap',
 })
 
+// Metadata الأساسية
 export async function generateMetadata() {
-  const {
-    site: { slogan, name, description, url },
-  } = await getSetting()
+  const setting = await getSetting()
+  const baseUrl = 'https://mg-zon.vercel.app' // استخدام رابط مباشر بدلًا من متغير البيئة
 
   return {
     title: {
-      template: `%s | ${name}`,
-      default: `${name} - ${slogan}`,
+      template: `%s | ${setting.site.name}`,
+      default: `${setting.site.name} - ${setting.site.slogan}`,
     },
-    description,
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || url),
+    description: setting.site.description,
+    metadataBase: new URL(baseUrl),
     openGraph: {
-      title: `${name} - ${slogan}`,
-      description,
-      url: process.env.NEXT_PUBLIC_SITE_URL || url,
-      siteName: name,
+      title: `${setting.site.name} - ${setting.site.slogan}`,
+      description: setting.site.description,
+      url: baseUrl,
+      siteName: setting.site.name,
       images: [
         {
-          url: process.env.NEXT_PUBLIC_OG_IMAGE_URL || `${url}/og-image.jpg`,
+          url: `${baseUrl}/og-image.jpg`, // استخدام مسار مباشر
           width: 1200,
           height: 630,
-          alt: `${name} logo`,
+          alt: setting.site.name,
         },
       ],
       locale: 'en_US',
@@ -53,15 +55,15 @@ export async function generateMetadata() {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${name} - ${slogan}`,
-      description,
-      images: [process.env.NEXT_PUBLIC_OG_IMAGE_URL || `${url}/og-image.jpg`],
+      title: `${setting.site.name} - ${setting.site.slogan}`,
+      description: setting.site.description,
+      images: [`${baseUrl}/og-image.jpg`], // استخدام مسار مباشر
     },
-    keywords: ['MGZon', 'online shopping', 'Ibrahim Elasfar', 'ecommerce'],
+    keywords: ['MGZon', 'E-commerce', setting.site.name, 'Online Shopping'],
   }
 }
 
-export default async function AppLayout({
+export default async function RootLayout({
   params,
   children,
 }: {
@@ -78,24 +80,39 @@ export default async function AppLayout({
 
   const messages = await getMessages()
 
+  // إنجازات المؤسس - Founder Achievements
+  const founderData = {
+    name: "Ibrahim Elasfar",
+    title: "Founder & CEO",
+    image: "/ibrahim_elasfar.jpg", // مسار مباشر من مجلد public
+    achievements: [
+      { value: "$15M", label: "Q1 2024 Revenue" },
+      { value: "300%", label: "YoY Growth" },
+      { value: "1M+", label: "Customers" }
+    ]
+  }
+
+  // البيانات المنظمة - Structured Data
   const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
+    "@context": "https://schema.org",
+    "@type": "Organization",
     name: setting.site.name,
-    url: process.env.NEXT_PUBLIC_SITE_URL || setting.site.url,
-    logo: process.env.NEXT_PUBLIC_LOGO_URL || `${setting.site.url}/logo.png`,
-    sameAs: [
-      'https://facebook.com/mgzon',
-      'https://twitter.com/mgzon',
-    ],
-    founder: {
-      '@type': 'Person',
-      name: 'Ibrahim Elasfar',
-      image: process.env.NEXT_PUBLIC_FOUNDER_IMAGE_URL || `${setting.site.url}/founder.jpg`,
-      jobTitle: 'Founder & CEO',
-      description: 'Ibrahim Elasfar is the founder of MGZon and leads the platform to success.',
+    url: "https://mg-zon.vercel.app",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://mg-zon.vercel.app/logo.svg",
+      width: 512,
+      height: 512,
     },
-    description: setting.site.description,
+    founder: {
+      "@type": "Person",
+      name: founderData.name,
+      jobTitle: founderData.title,
+      description: `Founder who led ${setting.site.name} to $15M revenue in Q1 2024`,
+      image: "https://mg-zon.vercel.app/ibrahim_elasfar.jpg",
+      alumniOf: setting.site.name,
+      award: "Forbes Middle East Top Entrepreneurs 2024"
+    }
   }
 
   return (
@@ -106,40 +123,65 @@ export default async function AppLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
+        <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ffffff" />
-        <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE} />
         
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         
-        {/* Open Graph Meta Tags */}
-        <meta property="og:title" content={`${setting.site.name} - ${setting.site.slogan}`} />
-        <meta property="og:description" content={setting.site.description} />
-        <meta property="og:url" content={process.env.NEXT_PUBLIC_SITE_URL || setting.site.url} />
-        <meta property="og:site_name" content={setting.site.name} />
-        <meta property="og:image" content={process.env.NEXT_PUBLIC_OG_IMAGE_URL || `${setting.site.url}/og-image.jpg`} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        
-        {/* Twitter Meta Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${setting.site.name} - ${setting.site.slogan}`} />
-        <meta name="twitter:description" content={setting.site.description} />
-        <meta name="twitter:image" content={process.env.NEXT_PUBLIC_OG_IMAGE_URL || `${setting.site.url}/og-image.jpg`} />
-        
-        {/* Structured Data */}
+        {/* بيانات المؤسس - Founder Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
-      <body className="min-h-screen bg-background antialiased">
+      <body className="min-h-screen bg-white antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders setting={{ ...setting, currency }}>
+            
+            {/* قسم المؤسس - Founder Section */}
+            <div className="founder-section bg-gray-50 py-8 border-b">
+              <div className="container mx-auto px-4">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  
+                  {/* صورة المؤسس - Founder Image */}
+                  <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-yellow-500">
+                    <Image
+                      src={founderData.image}
+                      alt={`${founderData.name}, ${founderData.title}`}
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                  
+                  {/* معلومات المؤسس - Founder Info */}
+                  <div className="text-center md:text-left">
+                    <h2 className="text-2xl font-bold">{founderData.name}</h2>
+                    <p className="text-gray-600">{founderData.title}</p>
+                    
+                    {/* الإنجازات - Achievements */}
+                    <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
+                      {founderData.achievements.map((item, index) => (
+                        <div key={index} className="bg-white px-4 py-2 rounded-lg shadow-sm border">
+                          <div className="font-bold text-blue-600">{item.value}</div>
+                          <div className="text-sm text-gray-500">{item.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* المحتوى الرئيسي - Main Content */}
             {children}
+
+            <Analytics />
+            <SpeedInsights />
           </ClientProviders>
         </NextIntlClientProvider>
       </body>
