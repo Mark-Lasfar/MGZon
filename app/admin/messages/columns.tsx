@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowUpDown, Mail, Phone, MessageSquare } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
+import { formatContactDate, getStatusBadgeVariant, truncateText } from "@/lib/utils"
 
 export const columns: ColumnDef<ContactMessage>[] = [
   {
@@ -13,7 +14,7 @@ export const columns: ColumnDef<ContactMessage>[] = [
       <div className="font-medium">
         {row.getValue("name")}
         <div className="text-sm text-muted-foreground">
-          {row.original.email}
+          {truncateText(row.original.email, 25)}
         </div>
       </div>
     ),
@@ -30,7 +31,7 @@ export const columns: ColumnDef<ContactMessage>[] = [
         ) : (
           <Mail className="h-4 w-4 text-purple-500" />
         )}
-        {row.getValue("subject")}
+        {truncateText(row.getValue("subject"), 30)}
       </div>
     ),
   },
@@ -47,6 +48,7 @@ export const columns: ColumnDef<ContactMessage>[] = [
         </Button>
       )
     },
+    cell: ({ row }) => formatContactDate(row.getValue("createdAt")),
   },
   {
     accessorKey: "status",
@@ -54,12 +56,7 @@ export const columns: ColumnDef<ContactMessage>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") as string
       return (
-        <Badge 
-          variant={
-            status === 'new' ? 'secondary' : 
-            status === 'in_progress' ? 'default' : 'success'
-          }
-        >
+        <Badge variant={getStatusBadgeVariant(status)}>
           {status.replace('_', ' ')}
         </Badge>
       )
