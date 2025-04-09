@@ -1,14 +1,7 @@
-// next.config.ts
-import type { NextConfig } from 'next'
-import withNextIntl from 'next-intl/plugin'
+import type { NextConfig } from 'next';
+import withNextIntl from 'next-intl/plugin';
 
-const nextConfig: NextConfig = {
-  // ===== الأساسيات =====
-  reactStrictMode: true,
-  poweredByHeader: false,
-  generateEtags: false,
-
-  // ===== الأمان =====
+const nextConfig: NextConfig = withNextIntl()({
   headers: async () => [
     {
       source: '/(.*)',
@@ -22,14 +15,12 @@ const nextConfig: NextConfig = {
     }
   ],
 
-  // ===== الصور =====
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'utfs.io',
         port: '',
-        pathname: '/**',
       },
     ],
     minimumCacheTTL: 86400,
@@ -38,24 +29,42 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // ===== المسارات =====
-  rewrites: async () => [
-    { source: '/admin/:path*', destination: '/404' },
-    { source: '/wp-admin', destination: '/404' },
-    { source: '/.env', destination: '/404' }
-  ],
+  async redirects() {
+    return [
+      {
+        source: '/admin/:path*',
+        destination: '/404',
+        permanent: false
+      },
+      {
+        source: '/wp-admin',
+        destination: '/404',
+        permanent: false
+      }
+    ]
+  },
 
-  // ===== الأداء =====
+  poweredByHeader: false,
+  reactStrictMode: true,
   swcMinify: true,
+  productionBrowserSourceMaps: false,
   compress: true,
-  optimizeFonts: true,
 
-  // ===== التخزين المؤقت =====
-  caching: {
-    handler: 'Cache-Control',
-    maxAge: 31536000,
-    staleWhileRevalidate: 86400
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://api.mg-zon.com/:path*', 
+      }
+    ]
   }
-}
+});
 
-export default withNextIntl(nextConfig)
+export default nextConfig;
