@@ -1,13 +1,16 @@
-import { getContactById } from '@/lib/actions/admin.actions'
+// app/admin/messages/[id]/page.tsx
+import { getContactById, updateMessageStatus } from '@/lib/actions/admin.actions'
 import { notFound } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ArrowLeft, Mail, Phone, MessageSquare } from 'lucide-react'
+import { ArrowLeft, Mail, Phone, MessageSquare, Clock, Globe, Smartphone } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { format } from 'date-fns'
+import { formatContactDate, getStatusBadgeVariant } from '@/lib/utils'
 import MarkAsResolvedButton from './MarkAsResolvedButton'
 import ReplyForm from './ReplyForm'
+import NotesSection from './NotesSection'
+import ActivityLog from './ActivityLog'
 
 export default async function MessagePage({
   params,
@@ -37,17 +40,18 @@ export default async function MessagePage({
                 <div>
                   <CardTitle>{message.subject}</CardTitle>
                   <div className="flex items-center gap-2 mt-2">
-                    <Badge 
-                      variant={
-                        message.status === 'new' ? 'secondary' : 
-                        message.status === 'in_progress' ? 'default' : 'success'
-                      }
-                    >
+                    <Badge variant={getStatusBadgeVariant(message.status)}>
                       {message.status.replace('_', ' ')}
                     </Badge>
                     <span className="text-sm text-muted-foreground">
-                      {format(new Date(message.createdAt), 'PPpp')}
+                      {formatContactDate(message.createdAt)}
                     </span>
+                    {message.updatedAt > message.createdAt && (
+                      <span className="text-sm text-muted-foreground flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        Updated {formatContactDate(message.updatedAt)}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <MarkAsResolvedButton 
@@ -60,11 +64,11 @@ export default async function MessagePage({
               <div className="flex items-center gap-4">
                 <div className="flex-1">
                   <h3 className="font-medium">From</h3>
-                  <p>{message.name}</p>
+                  <p className="font-semibold">{message.name}</p>
                   <p className="text-muted-foreground">{message.email}</p>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium">Contact</h3>
+                  <h3 className="font-medium">Contact Type</h3>
                   <p>
                     {message.subject.includes('question') ? (
                       <span className="flex items-center gap-2">
@@ -85,16 +89,18 @@ export default async function MessagePage({
 
               <div className="mt-6">
                 <h3 className="font-medium mb-2">Message</h3>
-                <div className="prose dark:prose-invert bg-muted/50 p-4 rounded-lg">
+                <div className="prose dark:prose-invert bg-muted/50 p-4 rounded-lg whitespace-pre-wrap">
                   {message.message}
                 </div>
               </div>
             </CardContent>
           </Card>
+
+          <NotesSection messageId={message._id} initialNotes={message.notes || []} />
         </div>
 
         <div className="space-y-6">
-          <ReplyForm email={message.email} />
+          <ReplyForm email={message.email} messageId={message._id} />
           
           <Card>
             <CardHeader>
@@ -103,16 +109,25 @@ export default async function MessagePage({
             <CardContent className="space-y-4">
               <div>
                 <h4 className="text-sm font-medium text-muted-foreground">IP Address</h4>
-                <p>{message.ipAddress || 'Not available'}</p>
+                <p className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  {message.ipAddress || 'Not available'}
+                </p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground">User Agent</h4>
-                <p className="text-sm break-all">
+                <h4 className="text-sm font-medium text-muted-foreground">Device Info</h4>
+                <p className="text-sm break-all flex items-start gap-2">
+                  <Smartphone className="h-4 w-4 mt-0.5" />
                   {message.userAgent || 'Not available'}
                 </p>
               </div>
             </CardContent>
           </Card>
+
+          <ActivityLog 
+            messageId={message._id} 
+            initialActivities={message.activities || []} 
+          />
         </div>
       </div>
     </div>
