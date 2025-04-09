@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm install --legacy-peer-deps && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "test": "jest",
     "analyze": "ANALYZE=true next build",
     "email": "email dev",
@@ -72,16 +72,16 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/parser": "7.18.0",
+    "eslint": "8.56.0",
+    "eslint-config-next": "15.1.0",
+    "typescript": "^5.3.3",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
     "autoprefixer": "^10.4.17",
-    "eslint": "^9",
-    "eslint-config-next": "^15.1.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -89,7 +89,9 @@
     "postcss": "^8",
     "prettier": "^3.2.5",
     "react-email": "^3.0.4",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "tailwindcss": "^3.4.1"
+  },
+  "overrides": {
+    "eslint": "8.56.0"
   }
 }
