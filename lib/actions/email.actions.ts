@@ -16,12 +16,12 @@ export async function sendEmail({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        pass: process.env.EMAIL_PASSWORD,     
       },
     })
 
     await transporter.sendMail({
-      from: `"MGZon Support" <support@mg-zon.vercel.app>`,
+      from: `"MGZon Support" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       text,
