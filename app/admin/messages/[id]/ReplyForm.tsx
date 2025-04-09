@@ -12,7 +12,7 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import { sendEmail } from '@/lib/actions/email.actions'
+import { sendEmail, addActivityLog } from '@/lib/actions/admin.actions'
 import { toast } from '@/components/ui/use-toast'
 
 const formSchema = z.object({
@@ -21,7 +21,13 @@ const formSchema = z.object({
   }),
 })
 
-export default function ReplyForm({ email }: { email: string }) {
+export default function ReplyForm({ 
+  email, 
+  messageId 
+}: { 
+  email: string
+  messageId: string
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,19 +37,28 @@ export default function ReplyForm({ email }: { email: string }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      // Send email
       await sendEmail({
         to: email,
         subject: "Re: Your Contact Message",
         text: values.reply,
       })
       
+      // Add activity log
+      await addActivityLog(messageId, {
+        type: 'reply',
+        content: `Replied to message: ${values.reply.substring(0, 50)}...`,
+      })
+
       toast({
         title: "Reply sent successfully",
+        description: "Your response has been sent to the customer",
       })
       form.reset()
     } catch (error) {
       toast({
         title: "Failed to send reply",
+        description: "Please try again later",
         variant: "destructive",
       })
     }
