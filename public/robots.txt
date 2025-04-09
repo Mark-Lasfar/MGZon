@@ -1,4 +1,70 @@
+# ===== MGZon Security-Focused Robots.txt =====
+# Last Updated: 2024-04-01
+# Security Level: Paranoid
+
+# ===== Global Rules =====
 User-agent: *
-Allow: /
+Allow: /$
+Allow: /products/
+Allow: /blog/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
 Disallow: /private/
+Disallow: /.*.env$
+Disallow: /.*.config$
+Disallow: /.*.git/
+Disallow: /.*wp-.*
+Disallow: /.*backup/
+Disallow: /.*sql/
+Disallow: /.*bak/
+
+# ===== Crawl Speed =====
+Crawl-delay: 10
+
+# ===== Security Bots Block =====
+User-agent: Nessus
+Disallow: /
+User-agent: Nmap
+Disallow: /
+User-agent: sqlmap
+Disallow: /
+User-agent: dirbuster
+Disallow: /
+
+# ===== AI Scrapers Block =====
+User-agent: GPTBot
+Disallow: /
+User-agent: ChatGPT-User
+Disallow: /
+User-agent: Anthropic-ai
+Disallow: /
+User-agent: Claude-Web
+Disallow: /
+
+# ===== SEO Scrapers Block =====
+User-agent: AhrefsBot
+Disallow: /
+User-agent: SemrushBot
+Disallow: /
+User-agent: MJ12bot
+Disallow: /
+User-agent: DotBot
+Disallow: /
+
+# ===== Sitemaps =====
 Sitemap: https://mg-zon.vercel.app/sitemap.xml
+Sitemap: https://mg-zon.vercel.app/sitemap-products.xml
+
+# ===== Special Rules =====
+User-agent: Googlebot
+Allow: /products/
+Allow: /blog/
+Disallow: /admin/
+Disallow: /api/
+Crawl-delay: 5
+
+User-agent: Bingbot
+Allow: /products/
+Disallow: /admin/
+Crawl-delay: 8
