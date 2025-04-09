@@ -1,41 +1,21 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-
 import qs from 'query-string'
+import { VariantProps } from "@/components/ui/badge"
 
-export function formUrlQuery({
-  params,
-  key,
-  value,
-}: {
-  params: string
-  key: string
-  value: string | null
-}) {
-  const currentUrl = qs.parse(params)
-
-  currentUrl[key] = value
-
-  return qs.stringifyUrl(
-    {
-      url: window.location.pathname,
-      query: currentUrl,
-    },
-    { skipNull: true }
-  )
-}
-
+// Utility Functions
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const formatNumberWithDecimal = (num: number): string => {
-  const [int, decimal] = num.toString().split('.')
-  return decimal ? `${int}.${decimal.padEnd(2, '0')}` : int
+// URL Handling
+export function formUrlQuery({ params, key, value }: { params: string; key: string; value: string | null }) {
+  const currentUrl = qs.parse(params)
+  currentUrl[key] = value
+  return qs.stringifyUrl({ url: window.location.pathname, query: currentUrl }, { skipNull: true })
 }
-// PROMPT: [ChatGTP] create toSlug ts arrow function that convert text to lowercase, remove non-word,
-// non-whitespace, non-hyphen characters, replace whitespace, trim leading hyphens and trim trailing hyphens
 
+// Text Formatting
 export const toSlug = (text: string): string =>
   text
     .toLowerCase()
@@ -44,212 +24,76 @@ export const toSlug = (text: string): string =>
     .replace(/^-+|-+$/g, '')
     .replace(/-+/g, '-')
 
+export const truncateText = (text: string, length: number = 50): string => 
+  text?.length > length ? `${text.substring(0, length)}...` : text || ''
+
+// Number Formatting
 const CURRENCY_FORMATTER = new Intl.NumberFormat('en-US', {
-  currency: 'USD',
   style: 'currency',
-  minimumFractionDigits: 2,
+  currency: 'USD',
+  minimumFractionDigits: 2
 })
+
 export function formatCurrency(amount: number) {
   return CURRENCY_FORMATTER.format(amount)
 }
 
-const NUMBER_FORMATTER = new Intl.NumberFormat('en-US')
-export function formatNumber(number: number) {
-  return NUMBER_FORMATTER.format(number)
-}
+export const round2 = (num: number) => Math.round((num + Number.EPSILON) * 100) / 100
 
-export const round2 = (num: number) =>
-  Math.round((num + Number.EPSILON) * 100) / 100
-
-export const generateId = () =>
-  Array.from({ length: 24 }, () => Math.floor(Math.random() * 10)).join('')
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const formatError = (error: any): string => {
-  if (error.name === 'ZodError') {
-    const fieldErrors = Object.keys(error.errors).map((field) => {
-      const errorMessage = error.errors[field].message
-      return `${error.errors[field].path}: ${errorMessage}` // field: errorMessage
-    })
-    return fieldErrors.join('. ')
-  } else if (error.name === 'ValidationError') {
-    const fieldErrors = Object.keys(error.errors).map((field) => {
-      const errorMessage = error.errors[field].message
-      return errorMessage
-    })
-    return fieldErrors.join('. ')
-  } else if (error.code === 11000) {
-    const duplicateField = Object.keys(error.keyValue)[0]
-    return `${duplicateField} already exists`
-  } else {
-    // return 'Something went wrong. please try again'
-    return typeof error.message === 'string'
-      ? error.message
-      : JSON.stringify(error.message)
-  }
-}
-
-export function calculateFutureDate(days: number) {
-  const currentDate = new Date()
-  currentDate.setDate(currentDate.getDate() + days)
-  return currentDate
-}
-export function getMonthName(yearMonth: string): string {
-  const [year, month] = yearMonth.split('-').map(Number)
-  const date = new Date(year, month - 1)
-  const monthName = date.toLocaleString('default', { month: 'long' })
-  const now = new Date()
-
-  if (year === now.getFullYear() && month === now.getMonth() + 1) {
-    return `${monthName} Ongoing`
-  }
-  return monthName
-}
-export function calculatePastDate(days: number) {
-  const currentDate = new Date()
-  currentDate.setDate(currentDate.getDate() - days)
-  return currentDate
-}
-export function timeUntilMidnight(): { hours: number; minutes: number } {
-  const now = new Date()
-  const midnight = new Date()
-  midnight.setHours(24, 0, 0, 0) // Set to 12:00 AM (next day)
-
-  const diff = midnight.getTime() - now.getTime() // Difference in milliseconds
-  const hours = Math.floor(diff / (1000 * 60 * 60))
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-
-  return { hours, minutes }
-}
-
-export const formatDateTime = (dateString: Date) => {
-  const dateTimeOptions: Intl.DateTimeFormatOptions = {
-    month: 'short', // abbreviated month name (e.g., 'Oct')
-    year: 'numeric', // abbreviated month name (e.g., 'Oct')
-    day: 'numeric', // numeric day of the month (e.g., '25')
-    hour: 'numeric', // numeric hour (e.g., '8')
-    minute: 'numeric', // numeric minute (e.g., '30')
-    hour12: true, // use 12-hour clock (true) or 24-hour clock (false)
-  }
-  const dateOptions: Intl.DateTimeFormatOptions = {
-    // weekday: 'short', // abbreviated weekday name (e.g., 'Mon')
-    month: 'short', // abbreviated month name (e.g., 'Oct')
-    year: 'numeric', // numeric year (e.g., '2023')
-    day: 'numeric', // numeric day of the month (e.g., '25')
-  }
-  const timeOptions: Intl.DateTimeFormatOptions = {
-    hour: 'numeric', // numeric hour (e.g., '8')
-    minute: 'numeric', // numeric minute (e.g., '30')
-    hour12: true, // use 12-hour clock (true) or 24-hour clock (false)
-  }
-  const formattedDateTime: string = new Date(dateString).toLocaleString(
-    'en-US',
-    dateTimeOptions
-  )
-  const formattedDate: string = new Date(dateString).toLocaleString(
-    'en-US',
-    dateOptions
-  )
-  const formattedTime: string = new Date(dateString).toLocaleString(
-    'en-US',
-    timeOptions
-  )
-  return {
-    dateTime: formattedDateTime,
-    dateOnly: formattedDate,
-    timeOnly: formattedTime,
-  }
-}
-
-export function formatId(id: string) {
-  return `..${id.substring(id.length - 6)}`
-}
-
-export const getFilterUrl = ({
-  params,
-  category,
-  tag,
-  sort,
-  price,
-  rating,
-  page,
-}: {
-  params: {
-    q?: string
-    category?: string
-    tag?: string
-    price?: string
-    rating?: string
-    sort?: string
-    page?: string
-  }
-  tag?: string
-  category?: string
-  sort?: string
-  price?: string
-  rating?: string
-  page?: string
-}) => {
-  const newParams = { ...params }
-  if (category) newParams.category = category
-  if (tag) newParams.tag = toSlug(tag)
-  if (price) newParams.price = price
-  if (rating) newParams.rating = rating
-  if (page) newParams.page = page
-  if (sort) newParams.sort = sort
-  return `/search?${new URLSearchParams(newParams).toString()}`
-}
-
-
-// ... المحتوى الحالي ...
-
+// Date Handling
 export const formatContactDate = (date: Date | string): string => {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
+  if (!date) return 'N/A'
+  return new Date(date).toLocaleString('en-US', {
     month: 'short',
     day: 'numeric',
+    year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit',
+    minute: '2-digit'
   })
 }
 
-export const getStatusBadgeVariant = (status: string) => {
-  switch (status) {
-    case 'new':
-      return 'secondary'
-    case 'in_progress':
-      return 'default'
-    case 'resolved':
-      return 'success'
-    default:
-      return 'outline'
+export function calculateFutureDate(days: number) {
+  const date = new Date()
+  date.setDate(date.getDate() + days)
+  return date
+}
+
+// Status Handling
+export const getStatusBadgeVariant = (status: string): VariantProps<typeof Badge>['variant'] => {
+  switch (status?.toLowerCase()) {
+    case 'new': return 'secondary'
+    case 'in_progress': return 'default'
+    case 'resolved': return 'success'
+    case 'spam': return 'destructive'
+    default: return 'outline'
   }
 }
 
-export const truncateText = (text: string, length: number = 50): string => {
-  return text.length > length ? `${text.substring(0, length)}...` : text
+// Error Handling
+export const formatError = (error: unknown): string => {
+  if (error instanceof Error) {
+    if (error.name === 'ZodError') {
+      return Object.entries((error as any).errors)
+        .map(([field, err]) => `${field}: ${(err as any).message}`)
+        .join('. ')
+    }
+    return error.message
+  }
+  return 'An unknown error occurred'
 }
 
-export const generatePagination = (currentPage: number, totalPages: number) => {
-  if (totalPages <= 7) {
-    return Array.from({ length: totalPages }, (_, i) => i + 1)
-  }
+// Security
+export const sanitizeInput = (input: string): string => 
+  input.replace(/[<>"'&]/g, '')
 
-  if (currentPage <= 3) {
-    return [1, 2, 3, '...', totalPages - 1, totalPages]
-  }
-
-  if (currentPage >= totalPages - 2) {
-    return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages]
-  }
-
-  return [
-    1,
-    '...',
-    currentPage - 1,
-    currentPage,
-    currentPage + 1,
-    '...',
-    totalPages,
-  ]
+// Pagination
+export const generatePagination = (current: number, total: number) => {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  if (current <= 3) return [1, 2, 3, '...', total - 1, total]
+  if (current >= total - 2) return [1, 2, '...', total - 2, total - 1, total]
+  return [1, '...', current - 1, current, current + 1, '...', total]
 }
+
+// Type Guards
+export const isContactMessage = (obj: any): obj is ContactMessage => 
+  obj && typeof obj._id === 'string' && typeof obj.name === 'string'
