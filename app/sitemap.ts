@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = []
   
   try {
-    // 1. جلب البيانات الأساسية بشكل متوازي
+    // 1. Fetching the basic data in parallel
     const [setting, products, pages, categories] = await Promise.all([
       getSetting(),
       getAllProducts({ query: 'all', page: 1, category: 'all', tag: 'all' }),
@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getAllCategories()
     ])
 
-    // 2. الصفحات الثابتة الأساسية
+    // 2. Static basic pages
     staticPages.push(
       {
         url: baseUrl,
@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     )
 
-    // 3. صفحة المؤسس (مميزة)
+    // 3. Founder page (highlighted)
     staticPages.push({
       url: `${baseUrl}/founder`,
       lastModified: currentDate,
@@ -55,7 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     })
 
-    // 4. المنتجات
+    // 4. Products
     const productPages = products.products.map(product => ({
       url: `${baseUrl}/product/${product.slug}`,
       lastModified: new Date(product.updatedAt || currentDate),
@@ -63,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
-    // 5. الأقسام (الكategories)
+    // 5. Categories
     const categoryPages = categories.map(category => ({
       url: `${baseUrl}/category/${category}`,
       lastModified: currentDate,
@@ -71,7 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }))
 
-    // 6. الصفحات الديناميكية
+    // 6. Dynamic pages
     const dynamicPages = pages.map(page => ({
       url: `${baseUrl}/page/${page.slug}`,
       lastModified: new Date(page.updatedAt || currentDate),
@@ -79,7 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }))
 
-    // 7. صفحات الإنجازات (بما فيها إنجاز الـ 15 مليون دولار)
+    // 7. Achievement pages (including the $15M revenue achievement)
     const achievementPages: MetadataRoute.Sitemap = [
       {
         url: `${baseUrl}/achievements/15m-revenue`,
@@ -101,7 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     ]
 
-    // 8. صفحات سياسية مهمة
+    // 8. Important policy pages
     const policyPages: MetadataRoute.Sitemap = [
       {
         url: `${baseUrl}/privacy`,
@@ -117,7 +117,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     ]
 
-    // 9. دمج كل الصفحات مع إضافة التاريخ لكل صفحة
+    // 9. Merging all pages with the date for each page
     return [
       ...staticPages,
       ...productPages,
@@ -130,14 +130,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch (error) {
     console.error('❌ Failed to generate sitemap:', error)
     
-    // 10. Fallback في حالة الخطأ
+    // 10. Fallback in case of failure
     return [
       {
         url: baseUrl,
         lastModified: currentDate,
         priority: 1.0,
       },
-      ...staticPages, // تضمين الصفحات الثابتة حتى لو فشل جلب البيانات الأخرى
+      ...staticPages, // Include static pages even if other data fetching fails
     ]
   }
 }
