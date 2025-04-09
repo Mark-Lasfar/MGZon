@@ -20,12 +20,14 @@ export default function MarkAsResolvedButton({
     
     if (result.success) {
       toast({
-        title: `Message marked as ${newStatus}`,
+        title: `Message marked as ${newStatus.replace('_', ' ')}`,
+        description: 'The status has been updated successfully',
       })
       router.refresh()
     } else {
       toast({
         title: "Error updating status",
+        description: result.error || 'Please try again',
         variant: "destructive",
       })
     }
