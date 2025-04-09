@@ -199,3 +199,57 @@ export const getFilterUrl = ({
   if (sort) newParams.sort = sort
   return `/search?${new URLSearchParams(newParams).toString()}`
 }
+
+
+// ... المحتوى الحالي ...
+
+export const formatContactDate = (date: Date | string): string => {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+export const getStatusBadgeVariant = (status: string) => {
+  switch (status) {
+    case 'new':
+      return 'secondary'
+    case 'in_progress':
+      return 'default'
+    case 'resolved':
+      return 'success'
+    default:
+      return 'outline'
+  }
+}
+
+export const truncateText = (text: string, length: number = 50): string => {
+  return text.length > length ? `${text.substring(0, length)}...` : text
+}
+
+export const generatePagination = (currentPage: number, totalPages: number) => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1)
+  }
+
+  if (currentPage <= 3) {
+    return [1, 2, 3, '...', totalPages - 1, totalPages]
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [1, 2, '...', totalPages - 2, totalPages - 1, totalPages]
+  }
+
+  return [
+    1,
+    '...',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    '...',
+    totalPages,
+  ]
+}
