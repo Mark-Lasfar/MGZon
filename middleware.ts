@@ -1,8 +1,9 @@
-import createMiddleware from 'next-intl/middleware'
-import { routing } from './i18n/routing'
-
-import NextAuth from 'next-auth'
-import authConfig from './auth.config'
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import NextAuth from 'next-auth';
+import authConfig from './auth.config';
 
 const publicPages = [
   '/',
@@ -13,40 +14,54 @@ const publicPages = [
   '/cart/(.*)',
   '/product/(.*)',
   '/page/(.*)',
-  // (/secret requires auth)
-]
+  '/terms',
+  '/privacy'
+];
 
-const intlMiddleware = createMiddleware(routing)
-const { auth } = NextAuth(authConfig)
+const intlMiddleware = createMiddleware(routing);
+const { auth } = NextAuth(authConfig);
 
-export default auth((req) => {
+export default auth((req: NextRequest) => {
+  const path = req.nextUrl.pathname;
+  
+  if (path.match(/\.(env|config|git|docker)/i)) {
+    return new NextResponse('Not Found', { status: 404 });
+  }
+
   const publicPathnameRegex = RegExp(
     `^(/(${routing.locales.join('|')}))?(${publicPages
       .flatMap((p) => (p === '/' ? ['', '/'] : p))
       .join('|')})/?$`,
     'i'
-  )
-  const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname)
+  );
+
+  const isPublicPage = publicPathnameRegex.test(path);
 
   if (isPublicPage) {
-    // return NextResponse.next()
-    return intlMiddleware(req)
+    return intlMiddleware(req);
   } else {
     if (!req.auth) {
-      const newUrl = new URL(
-        `/sign-in?callbackUrl=${
-          encodeURIComponent(req.nextUrl.pathname) || '/'
-        }`,
-        req.nextUrl.origin
-      )
-      return Response.redirect(newUrl)
+      const signInUrl = new URL('/sign-in', req.nextUrl.origin);
+      signInUrl.searchParams.set('callbackUrl', path || '/');
+      return NextResponse.redirect(signInUrl);
     } else {
-      return intlMiddleware(req)
+      if (path.startsWith('/dashboard') && !req.auth.user.isAdmin) {
+        return new NextResponse('Forbidden', { status: 403 });
+      }
+      return intlMiddleware(req);
     }
   }
-})
+});
 
 export const config = {
-  // Skip all paths that should not be internationalized
-  matcher: ['/((?!api|_next|.*\\..*).*)'],
-}
+  matcher: [
+    '/((?!api|_next|_vercel|.*\\..*).*)',
+    {
+      source: '/((?!api|_next|_vercel|.*\\..*).*)',
+      missing: [
+        { type: 'header', key: 'next-router-prefetch' },
+        { type: 'header', key: 'purpose', value: 'prefetch' }
+      ]
+    }
+  ]
+};
