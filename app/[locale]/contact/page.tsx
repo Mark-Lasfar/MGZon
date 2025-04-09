@@ -3,6 +3,7 @@ import ContactForm from '@/components/contact/ContactForm'
 import RatingSystem from '@/components/contact/RatingSystem'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { getSetting } from '@/lib/actions/setting.actions'
+import { MapPin, Phone, Mail } from 'lucide-react'
 
 export default async function ContactPage() {
   const messages = await getMessages()
@@ -11,15 +12,19 @@ export default async function ContactPage() {
   return (
     <div className="py-12">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-12">Contact Us</h1>
-        
+        <h1 className="text-4xl font-bold text-center mb-12">
+          {messages.Contact.title || 'Contact Us'}
+        </h1>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Contact Form */}
-          <Card className="border-primary shadow-lg">
+          <Card className="shadow-md">
             <CardHeader>
-              <h2 className="text-2xl font-bold">Send us a message</h2>
-              <p className="text-muted-foreground">
-                We'll respond within 24 hours
+              <h2 className="text-2xl font-semibold mb-2">
+                {messages.Contact.formTitle || 'Send us a message'}
+              </h2>
+              <p className="text-gray-600">
+                {messages.Contact.formSubtitle || 'We’ll get back to you as soon as possible.'}
               </p>
             </CardHeader>
             <CardContent>
@@ -27,60 +32,56 @@ export default async function ContactPage() {
             </CardContent>
           </Card>
 
-          {/* Company Info & Rating */}
-          <div className="space-y-8">
-            <Card className="border-primary shadow-lg">
-              <CardHeader>
-                <h2 className="text-2xl font-bold">Our Information</h2>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          {/* Contact Info */}
+          <Card className="bg-gray-50 shadow-sm border border-gray-200">
+            <CardHeader>
+              <h2 className="text-2xl font-semibold mb-2">
+                {messages.Contact.infoTitle || 'Our Contact Details'}
+              </h2>
+              <p className="text-gray-600">
+                {messages.Contact.infoSubtitle || 'Reach us through any of the following ways.'}
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Address */}
+              <div className="flex items-start gap-4">
+                <MapPin className="text-primary mt-1" />
                 <div>
-                  <h3 className="font-semibold">Email</h3>
-                  <p>contact@mg-zon.vercel.app</p>
+                  <h4 className="font-medium text-gray-800 mb-1">{messages.Contact.address || 'Address'}</h4>
+                  <p className="text-gray-600">
+                    {setting.site.address?.street || '123 Business Ave'},<br />
+                    {setting.site.address?.city || 'New York'}, {setting.site.address?.state || 'NY'}<br />
+                    {setting.site.address?.country || 'USA'}, {setting.site.address?.zip || '10001'}
+                  </p>
                 </div>
-                <div>
-                  <h3 className="font-semibold">Phone</h3>
-                  <p>{setting.site.phone || '+01212444617'}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold">Address</h3>
-                  <p>{setting.site.address?.street || '123 Business Ave'}</p>
-                  <p>{setting.site.address?.city || 'New York'}, {setting.site.address?.state || 'NY'} {setting.site.address?.zip || '10001'}</p>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card className="border-primary shadow-lg">
-              <CardHeader>
-                <h2 className="text-2xl font-bold">Customer Ratings</h2>
-                <div className="flex items-center">
-                  <span className="text-3xl font-bold mr-2">9.0</span>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <StarIcon key={i} filled={i < 4.5} />
-                    ))}
-                  </div>
-                  <span className="text-sm text-muted-foreground ml-2">(1M+ reviews)</span>
+              {/* Phone */}
+              <div className="flex items-start gap-4">
+                <Phone className="text-primary mt-1" />
+                <div>
+                  <h4 className="font-medium text-gray-800 mb-1">{messages.Contact.phone || 'Phone'}</h4>
+                  <p className="text-gray-600">{setting.site.phone || '+01212444617'}</p>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <RatingSystem />
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start gap-4">
+                <Mail className="text-primary mt-1" />
+                <div>
+                  <h4 className="font-medium text-gray-800 mb-1">{messages.Contact.email || 'Email'}</h4>
+                  <p className="text-gray-600">{setting.site.email || 'contact@mg-zon.vercel.app'}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Rating System */}
+        <div className="mt-12">
+          <RatingSystem />
         </div>
       </div>
     </div>
-  )
-}
-
-function StarIcon({ filled }: { filled: boolean }) {
-  return (
-    <svg
-      className={`w-5 h-5 ${filled ? 'text-yellow-500 fill-current' : 'text-gray-300'}`}
-      viewBox="0 0 20 20"
-    >
-      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-    </svg>
   )
 }
