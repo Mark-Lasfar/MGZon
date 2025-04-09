@@ -1,42 +1,37 @@
-import type { NextConfig } from 'next'
-import withNextIntl from 'next-intl/plugin'
-
-const securityHeaders = [
-  { key: 'X-Frame-Options', value: 'DENY' },
-  { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' }
-]
+import type { NextConfig } from 'next';
+import withNextIntl from 'next-intl/plugin';
 
 const nextConfig: NextConfig = withNextIntl()({
-  // Security Headers
   headers: async () => [
     {
       source: '/(.*)',
-      headers: securityHeaders
+      headers: [
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' }
+      ]
     }
   ],
 
-  // Image Optimization
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'utfs.io'
+        hostname: 'utfs.io',
       },
       {
         protocol: 'https',
-        hostname: 'mg-zon.vercel.app'
+        hostname: 'mg-zon.vercel.app',
       }
     ],
     minimumCacheTTL: 86400,
     formats: ['image/webp'],
     dangerouslyAllowSVG: false,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // Routing
   redirects: async () => [
     {
       source: '/admin/:path*',
@@ -50,7 +45,6 @@ const nextConfig: NextConfig = withNextIntl()({
     }
   ],
 
-  // Performance
   output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
@@ -58,34 +52,25 @@ const nextConfig: NextConfig = withNextIntl()({
   productionBrowserSourceMaps: false,
   compress: true,
 
-  // Build Settings
   eslint: {
-    ignoreDuringBuilds: true
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: false
+    ignoreBuildErrors: false,
   },
 
-  // API Routing
   rewrites: async () => [
     {
       source: '/api/:path*',
-      destination: `${process.env.API_BASE_URL || 'https://mg-zon.vercel.app'}/api/:path*`
+      destination: `${process.env.API_BASE_URL || 'https://mg-zon.vercel.app/'}/:path*`,
     }
   ],
 
-  // Internationalization
   i18n: {
     locales: ['en', 'ar'],
     defaultLocale: 'en',
     localeDetection: true
-  },
-
-  // Webpack Optimizations
-  webpack: (config) => {
-    config.resolve.fallback = { fs: false, net: false, tls: false }
-    return config
   }
-})
+});
 
-export default nextConfig
+export default nextConfig;
