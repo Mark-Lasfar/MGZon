@@ -3,7 +3,11 @@ import withNextIntl from 'next-intl/plugin';
 
 const nextConfig: NextConfig = withNextIntl()({
   experimental: {
-    optimizePackageImports: ['@vercel/analytics', '@vercel/speed-insights']
+    optimizePackageImports: [
+      '@radix-ui/react-*',
+      '@vercel/analytics',
+      '@vercel/speed-insights'
+    ]
   },
   headers: async () => [
     {
