@@ -3,8 +3,7 @@ import withNextIntl from 'next-intl/plugin';
 
 const nextConfig: NextConfig = withNextIntl()({
   experimental: {
-    esmExternals: 'loose',
-    serverComponentsExternalPackages: ['mongoose']
+    serverExternalPackages: ['mongoose']
   },
   
   headers: async () => [
@@ -53,8 +52,6 @@ const nextConfig: NextConfig = withNextIntl()({
   output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
-  productionBrowserSourceMaps: false,
   compress: true,
 
   eslint: {
@@ -62,19 +59,6 @@ const nextConfig: NextConfig = withNextIntl()({
   },
   typescript: {
     ignoreBuildErrors: false,
-  },
-
-  rewrites: async () => [
-    {
-      source: '/api/:path*',
-      destination: `${process.env.API_BASE_URL || 'https://mg-zon.vercel.app/'}/:path*`,
-    }
-  ],
-
-  i18n: {
-    locales: ['en', 'ar'],
-    defaultLocale: 'en',
-    localeDetection: true
   }
 });
 
