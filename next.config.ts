@@ -3,9 +3,8 @@ import withNextIntl from 'next-intl/plugin';
 
 const nextConfig: NextConfig = withNextIntl()({
   experimental: {
-    serverExternalPackages: ['mongoose']
+    optimizePackageImports: ['@vercel/analytics', '@vercel/speed-insights']
   },
-  
   headers: async () => [
     {
       source: '/(.*)',
@@ -18,7 +17,6 @@ const nextConfig: NextConfig = withNextIntl()({
       ]
     }
   ],
-
   images: {
     remotePatterns: [
       {
@@ -35,7 +33,6 @@ const nextConfig: NextConfig = withNextIntl()({
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-
   redirects: async () => [
     {
       source: '/admin/:path*',
@@ -48,12 +45,10 @@ const nextConfig: NextConfig = withNextIntl()({
       permanent: false
     }
   ],
-
   output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
   compress: true,
-
   eslint: {
     ignoreDuringBuilds: true,
   },
