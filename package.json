@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm install --force && next build",
+    "build": "npm install -g npm@latest && npm install --force && next build",
     "start": "next start",
     "lint": "next lint",
     "email": "email dev",
@@ -82,7 +82,7 @@
     "typescript": "^5.4.5"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=11.3.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
