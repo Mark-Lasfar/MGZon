@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build",
+    "build": "npm install && next build",
     "start": "next start",
     "lint": "next lint",
     "email": "email dev",
@@ -32,14 +32,14 @@
     "@radix-ui/react-toast": "^1.2.3",
     "@react-email/components": "^0.0.31",
     "@stripe/react-stripe-js": "^3.1.1",
-    "@stripe/stripe-js": "^5.4.0",
+    "@stripe/stripe-js": "^6.1.0",
     "@uploadthing/react": "^7.1.5",
     "@vercel/analytics": "^1.1.5",
     "@vercel/speed-insights": "^1.1.5",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.1.0",
     "embla-carousel-autoplay": "^8.5.1",
     "embla-carousel-react": "^8.5.1",
     "lucide-react": "^0.468.0",
@@ -51,9 +51,8 @@
     "next-sitemap": "^4.1.2",
     "next-themes": "^0.4.4",
     "query-string": "^9.1.1",
-    "react": "^18.2.0",
-    "react-day-picker": "^8.10.1",
-    "react-dom": "^18.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
     "react-intersection-observer": "^9.14.1",
     "react-markdown": "^9.0.1",
@@ -71,28 +70,20 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "^20.11.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.5",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "autoprefixer": "^10.4.17",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "^15.1.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "jest": "^29.7.0",
-    "postcss": "^8",
-    "prettier": "^3.2.5",
-    "react-email": "^3.0.4",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.3"
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.1.6",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.2",
+    "typescript": "^5.4.5"
   },
-  "overrides": {
-    "eslint": {
-      "@typescript-eslint/parser": "7.18.0",
-      "@typescript-eslint/eslint-plugin": "7.18.0"
-    }
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
