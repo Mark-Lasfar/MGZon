@@ -9,7 +9,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node", // تم التعديل من "bundler" إلى "node"
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -17,15 +17,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@/components/*": ["./components/*"], // أضيفت نقطة قبل المسار
-      "@/hooks/*": ["./hooks/*"], // أضيفت نقطة قبل المسار
-      "@/lib/*": ["./lib/*"] // أضيفت نقطة قبل المسار
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+      "@/components/*": ["./components/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/lib/*": ["./lib/*"]
+    }
   },
   "include": [
     "next-env.d.ts",
