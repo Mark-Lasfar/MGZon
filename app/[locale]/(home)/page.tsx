@@ -1,25 +1,29 @@
-import BrowsingHistoryList from '@/components/shared/browsing-history-list'
-import { HomeCard } from '@/components/shared/home/home-card'
-import { HomeCarousel } from '@/components/shared/home/home-carousel'
-import ProductSlider from '@/components/shared/product/product-slider'
-import { Card, CardContent } from '@/components/ui/card'
-
-import {
-  getProductsForCard,
-  getProductsByTag,
-  getAllCategories,
-} from '@/lib/actions/product.actions'
-import { getSetting } from '@/lib/actions/setting.actions'
-import { toSlug } from '@/lib/utils'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations } from '@/lib/utils/getTranslations'
+import { getSetting } from '@/lib/utils/getSetting'
+import { getProductsByTag } from '@/lib/utils/getProducts'
+import { getAllCategories } from '@/lib/utils/getCategories'
+import { getProductsForCard } from '@/lib/utils/getProductsForCard'
+import { toSlug } from '@/lib/utils/toSlug'
+import HomeCarousel from '@/components/HomeCarousel'
+import HomeCard from '@/components/HomeCard'
+import ProductSlider from '@/components/ProductSlider'
+import Card from '@/components/Card'
+import CardContent from '@/components/CardContent'
+import BrowsingHistoryList from '@/components/BrowsingHistoryList'
 
 export default async function HomePage() {
+  // Get translations for the Home page
   const t = await getTranslations('Home')
+  // Get carousel items from the settings
   const { carousels } = await getSetting()
+  // Fetch products by tags for Today's Deals and Best Selling Products
   const todaysDeals = await getProductsByTag({ tag: 'todays-deal' })
   const bestSellingProducts = await getProductsByTag({ tag: 'best-seller' })
-
+  
+  // Fetch categories and limit to 4
   const categories = (await getAllCategories()).slice(0, 4)
+  
+  // Fetch products for New Arrivals, Featured, and Best Sellers
   const newArrivals = await getProductsForCard({
     tag: 'new-arrival',
   })
@@ -29,6 +33,8 @@ export default async function HomePage() {
   const bestSellers = await getProductsForCard({
     tag: 'best-seller',
   })
+
+  // Create cards for rendering
   const cards = [
     {
       title: t('Categories to explore'),
@@ -38,7 +44,10 @@ export default async function HomePage() {
       },
       items: categories.map((category) => ({
         name: category,
-        image: `/images/${toSlug(category)}.jpg`,
+        // Check if the image is a local file or an external URL
+        image: category.images && category.images[0]?.startsWith('http')
+          ? category.images[0] // Use the external URL if available
+          : `/images/${toSlug(category.name)}.jpg`, // Use the local path if the image is stored locally
         href: `/search?category=${category}`,
       })),
     },
