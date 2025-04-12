@@ -34,9 +34,7 @@ export async function generateMetadata() {
     },
     description: setting.site.description,
     metadataBase: new URL(baseUrl),
-    alternates: {
-      canonical: baseUrl,
-    },
+    alternates: { canonical: baseUrl },
     openGraph: {
       title: setting.site.name,
       description: setting.site.description,
@@ -73,17 +71,17 @@ export default async function AppLayout({
   const currency = cookies().get('currency')?.value || 'USD'
   const { locale } = params
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale)) {
     notFound()
   }
 
   const messages = await getMessages()
 
-  // Founder data for rich snippets
+  // بيانات المؤسس لإنشاء rich snippets
   const founderData = {
     name: "Ibrahim Elasfar",
     title: "Founder & CEO",
-    image: "/images/ibrahim_elasfar.jpg",
+    image: "/images/ibrahim_elasfar.png",
     achievements: [
       { value: "$15M", label: "Q1 2024 Revenue" },
       { value: "300%", label: "YoY Growth" },
@@ -91,7 +89,7 @@ export default async function AppLayout({
     ]
   }
 
-  // Structured data for search engines
+  // بيانات مهيكلة (Structured Data) لتحسين SEO
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -124,6 +122,8 @@ export default async function AppLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
+        {/* علامة إثبات ملكية Google */}
+        <meta name="google-site-verification" content="PQo-i3w5jhSFT2MCdZxg0HnFOHDQ-iYMLNg8rYeFtXM" />
         <Script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -132,8 +132,7 @@ export default async function AppLayout({
       <body className="min-h-screen antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders setting={{ ...setting, currency }}>
-            
-            {/* Trust Signals Section */}
+            {/* قسم إشارات الثقة */}
             <div className="bg-gradient-to-r from-blue-50 to-gray-50 py-8 border-b">
               <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row items-center gap-8">
@@ -148,24 +147,13 @@ export default async function AppLayout({
                     />
                   </div>
                   <div className="text-center md:text-left">
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      {founderData.name}
-                    </h2>
-                    <p className="text-lg text-blue-600 mb-4">
-                      {founderData.title}
-                    </p>
+                    <h2 className="text-2xl font-bold text-gray-900">{founderData.name}</h2>
+                    <p className="text-lg text-blue-600 mb-4">{founderData.title}</p>
                     <div className="flex flex-wrap justify-center gap-4">
                       {founderData.achievements.map((item, index) => (
-                        <div 
-                          key={index}
-                          className="bg-white px-6 py-3 rounded-lg shadow-sm border border-gray-100"
-                        >
-                          <p className="text-xl font-bold text-gray-900">
-                            {item.value}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {item.label}
-                          </p>
+                        <div key={index} className="bg-white px-6 py-3 rounded-lg shadow-sm border border-gray-100">
+                          <p className="text-xl font-bold text-gray-900">{item.value}</p>
+                          <p className="text-sm text-gray-500">{item.label}</p>
                         </div>
                       ))}
                       <div className="bg-white px-6 py-3 rounded-lg shadow-sm border border-gray-100">
@@ -174,18 +162,14 @@ export default async function AppLayout({
                             <StarIcon key={i} className="w-5 h-5 text-yellow-400" />
                           ))}
                         </div>
-                        <p className="text-sm text-gray-500 mt-1">
-                          1,250+ Reviews
-                        </p>
+                        <p className="text-sm text-gray-500 mt-1">1,250+ Reviews</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
             {children}
-
             <Analytics />
             <SpeedInsights />
           </ClientProviders>
