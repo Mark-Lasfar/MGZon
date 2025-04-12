@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
+import '../globals.css'
 import ClientProviders from '@/components/shared/client-providers'
 import { getDirection } from '@/i18n-config'
 import { NextIntlClientProvider } from 'next-intl'
@@ -11,24 +11,21 @@ import { cookies } from 'next/headers'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Image from 'next/image'
-import React from 'react'
+import Script from 'next/script'
 
-// Font Configuration
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
-  display: 'swap',
 })
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
-  display: 'swap',
 })
 
 export async function generateMetadata() {
   const setting = await getSetting()
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mg-zon.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || setting.site.url
 
   return {
     title: {
@@ -37,33 +34,35 @@ export async function generateMetadata() {
     },
     description: setting.site.description,
     metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: baseUrl,
+    },
     openGraph: {
-      title: `${setting.site.name} - ${setting.site.slogan}`,
+      title: setting.site.name,
       description: setting.site.description,
       url: baseUrl,
       siteName: setting.site.name,
-      images: [{
-        url: `${baseUrl}/og-image.jpg`,
-        width: 1200,
-        height: 630,
-        alt: setting.site.name,
-      }],
+      images: [
+        {
+          url: `${baseUrl}/images/og-image.jpg`,
+          width: 1200,
+          height: 630,
+          alt: setting.site.name,
+        },
+      ],
       locale: 'en_US',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${setting.site.name} - ${setting.site.slogan}`,
+      title: setting.site.name,
       description: setting.site.description,
-      images: [`${baseUrl}/og-image.jpg`],
+      images: [`${baseUrl}/images/og-image.jpg`],
     },
-    verification: {
-      google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE,
-    }
   }
 }
 
-export default async function RootLayout({
+export default async function AppLayout({
   params,
   children,
 }: {
@@ -74,13 +73,13 @@ export default async function RootLayout({
   const currency = cookies().get('currency')?.value || 'USD'
   const { locale } = params
 
-  if (!routing.locales.includes(locale)) {
+  if (!routing.locales.includes(locale as any)) {
     notFound()
   }
 
   const messages = await getMessages()
 
-  // Founder Data
+  // Founder data for rich snippets
   const founderData = {
     name: "Ibrahim Elasfar",
     title: "Founder & CEO",
@@ -92,21 +91,29 @@ export default async function RootLayout({
     ]
   }
 
-  // Structured Data
+  // Structured data for search engines
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: setting.site.name,
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://mg-zon.vercel.app",
-    logo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://mg-zon.vercel.app"}/logo.svg`,
-    founder: {
+    "name": setting.site.name,
+    "url": process.env.NEXT_PUBLIC_SITE_URL || setting.site.url,
+    "logo": `${process.env.NEXT_PUBLIC_SITE_URL || setting.site.url}/logo.svg`,
+    "founder": {
       "@type": "Person",
-      name: founderData.name,
-      jobTitle: founderData.title,
-      description: "Serial entrepreneur who scaled MGZon to $15M revenue in Q1 2024",
-      image: `${process.env.NEXT_PUBLIC_SITE_URL || "https://mg-zon.vercel.app"}${founderData.image}`,
+      "name": founderData.name,
+      "jobTitle": founderData.title
     },
-    description: setting.site.description,
+    "foundingDate": "2020",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "US"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "1250",
+      "bestRating": "5"
+    }
   }
 
   return (
@@ -117,44 +124,60 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#ffffff" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <script
+        <Script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
-      <body className="min-h-screen bg-background antialiased">
+      <body className="min-h-screen antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders setting={{ ...setting, currency }}>
             
-            {/* Founder Section */}
-            <div className="founder-banner bg-white shadow-sm">
-              <div className="container mx-auto px-4 py-8">
+            {/* Trust Signals Section */}
+            <div className="bg-gradient-to-r from-blue-50 to-gray-50 py-8 border-b">
+              <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row items-center gap-8">
-                  <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-500">
+                  <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
                     <Image
                       src={founderData.image}
-                      alt={`${founderData.name}, ${founderData.title}`}
-                      fill
+                      alt={founderData.name}
+                      width={128}
+                      height={128}
                       className="object-cover"
                       priority
                     />
                   </div>
-                  <div className="flex-1 text-center md:text-left">
-                    <h2 className="text-3xl font-bold">{founderData.name}</h2>
-                    <p className="text-xl text-gray-600 mb-4">{founderData.title}</p>
-                    <div className="grid grid-cols-3 gap-4 max-w-2xl">
+                  <div className="text-center md:text-left">
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      {founderData.name}
+                    </h2>
+                    <p className="text-lg text-blue-600 mb-4">
+                      {founderData.title}
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-4">
                       {founderData.achievements.map((item, index) => (
-                        <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                          <div className="text-2xl font-bold text-blue-600">{item.value}</div>
-                          <div className="text-sm text-gray-500">{item.label}</div>
+                        <div 
+                          key={index}
+                          className="bg-white px-6 py-3 rounded-lg shadow-sm border border-gray-100"
+                        >
+                          <p className="text-xl font-bold text-gray-900">
+                            {item.value}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {item.label}
+                          </p>
                         </div>
                       ))}
+                      <div className="bg-white px-6 py-3 rounded-lg shadow-sm border border-gray-100">
+                        <div className="flex items-center justify-center">
+                          {[...Array(5)].map((_, i) => (
+                            <StarIcon key={i} className="w-5 h-5 text-yellow-400" />
+                          ))}
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                          1,250+ Reviews
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -162,11 +185,29 @@ export default async function RootLayout({
             </div>
 
             {children}
+
             <Analytics />
             <SpeedInsights />
           </ClientProviders>
         </NextIntlClientProvider>
       </body>
     </html>
+  )
+}
+
+function StarIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+        clipRule="evenodd"
+      />
+    </svg>
   )
 }
