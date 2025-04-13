@@ -10,29 +10,48 @@ export const ReviewSchema = z.object({
 
 export type Review = z.infer<typeof ReviewSchema>;
 
-const generateReviews = (count: number): Review[] => {
-  const names = [
-    "Lina A.", "Mohammed F.", "Sara B.", "Hassan K.", "Emily R.",
-    "John D.", "Olivia P.", "James L.", "Amira T.", "Sami M."
-  ];
-  
-  const reviews = [];
-  for (let i = 0; i < count; i++) {
-    const randomName = names[Math.floor(Math.random() * names.length)];
-    const randomRating = Math.floor(Math.random() * 5) + 1;
-    const randomContent = `This is review number ${i + 1}, great product!`;
-    const randomDate = new Date(Date.now() - Math.floor(Math.random() * 10000000000));
-    
-    reviews.push({
-      id: String(i + 1),
-      rating: randomRating,
-      content: randomContent,
-      author: randomName,
-      date: randomDate,
-    });
-  }
-  return reviews;
+const firstNames = ["John", "Emily", "Michael", "Sarah", "David", "Jessica", "Daniel", "Ashley", "Matthew", "Amanda"];
+const lastNames = ["Smith", "Johnson", "Brown", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin"];
+const reviewPhrases = [
+  "Absolutely love this product!",
+  "Exceeded my expectations!",
+  "Not bad, but could be improved.",
+  "Worst experience ever.",
+  "Fast shipping and great quality!",
+  "Will definitely buy again.",
+  "Customer service was very helpful.",
+  "Highly recommend to anyone.",
+  "The packaging was very secure.",
+  "Five stars all the way!",
+];
+
+const randomDate = (): Date => {
+  const now = new Date();
+  const past = new Date(now.getFullYear() - 1, 0, 1).getTime();
+  const diff = now.getTime() - past;
+  return new Date(past + Math.random() * diff);
 };
 
-export const mockReviews = generateReviews(150000);
+const randomName = (): string => {
+  const first = firstNames[Math.floor(Math.random() * firstNames.length)];
+  const last = lastNames[Math.floor(Math.random() * lastNames.length)];
+  return `${first} ${last}`;
+};
 
+const generateReview = (id: number): Review => ({
+  id: id.toString(),
+  rating: Math.floor(Math.random() * 5) + 1,
+  content: reviewPhrases[Math.floor(Math.random() * reviewPhrases.length)],
+  author: randomName(),
+  date: randomDate(),
+});
+
+const TOTAL_REVIEWS = 150000;
+export const mockReviews: Review[] = Array.from({ length: TOTAL_REVIEWS }, (_, i) => generateReview(i + 1));
+
+export function getReviews(page: number = 1, limit: number = 50): { reviews: Review[]; total: number; page: number; totalPages: number; } {
+  const start = (page - 1) * limit;
+  const end = start + limit;
+  const reviews = mockReviews.slice(start, end);
+  return { reviews, total: TOTAL_REVIEWS, page, totalPages: Math.ceil(TOTAL_REVIEWS / limit) };
+}
