@@ -8,7 +8,7 @@ const locales = i18n.locales
   .map((locale) => locale.code)
 
 const isNotInPaths = (s: string) => {
-  const localePattern = `/(?:${locales.join('|')})` // Match locales
+  const localePattern = `/(?:${locales.join('|')})` 
   const pathsPattern = `^(?:${localePattern})?(?:/$|/cart$|/checkout$|/sign-in$|/sign-up$|/order(?:/.*)?$|/account(?:/.*)?$|/admin(?:/.*)?$)?$`
   return !new RegExp(pathsPattern).test(s)
 }
@@ -21,7 +21,9 @@ function useCartSidebar() {
   const currentPath = usePathname()
 
   return (
-    items.length > 0 && deviceType === 'desktop' && isNotInPaths(currentPath)
+    items.length > 0 &&
+    deviceType === 'desktop' &&
+    isNotInPaths(currentPath)
   )
 }
 
