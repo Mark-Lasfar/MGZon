@@ -18,13 +18,10 @@ export default function ClientProviders({
 
   return (
     <AppInitializer setting={setting}>
-      <ThemeProvider
-        attribute='class'
-        defaultTheme={setting.common.defaultTheme.toLocaleLowerCase()}
-      >
+      <ThemeProvider attribute="class" defaultTheme={setting.common.defaultTheme.toLocaleLowerCase()}>
         {visible ? (
-          <div className='flex min-h-screen'>
-            <div className='flex-1 overflow-hidden'>{children}</div>
+          <div className="flex min-h-screen">
+            <div className="flex-1 overflow-hidden">{children}</div>
             <CartSidebar />
           </div>
         ) : (
