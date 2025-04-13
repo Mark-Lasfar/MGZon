@@ -14,10 +14,9 @@ export default function AppInitializer({
   useEffect(() => {
     setRendered(true)
   }, [setting])
+
   if (!rendered) {
-    useSettingStore.setState({
-      setting,
-    })
+    useSettingStore.setState({ setting })
   }
 
   return children
