@@ -10,7 +10,7 @@
 | Authentication | Auth.js, Google Auth, Magic Link |
 | Others         | uploadthing, resend, zod, etc    |
 
-[![Next.js MongoDB Amazona](/public/images/app.png)](https://mg-zon.vercel.app/)
+[![Next.js MongoDB Amazona](/public/icons/logo.svg)](https://mg-zon.vercel.app/)
 
 
 ## View Demo Website
